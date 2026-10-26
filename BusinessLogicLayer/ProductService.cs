@@ -1,31 +1,45 @@
+using Microsoft.EntityFrameworkCore;
 using Models;
 using DataAccessLayer;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace BusinessLogicLayer
+namespace BusinessLogicLayer;
+
+public class ProductService : IProductService
 {
-    public class ProductService : IProductService
+    private readonly IDbContextFactory<AppDbContext> _factory;
+
+    public ProductService(IDbContextFactory<AppDbContext> factory)
+        => _factory = factory;
+
+    public async Task<List<Product>> GetAllAsync()
     {
-        public List<ProductModel> GetAllData()
-        {
-            return CRUD.GetAllData();
-        }
+        await using var db = await _factory.CreateDbContextAsync();
+        return await db.Products
+            .AsNoTracking()
+            .OrderBy(p => p.Name)
+            .ToListAsync();
+    }
 
-        public bool AddProduct(ProductModel product)
-        {
-            return CRUD.AddProduct(product);
-        }
+    public async Task AddAsync(Product product)
+    {
+        await using var db = await _factory.CreateDbContextAsync();
+        db.Products.Add(product);
+        await db.SaveChangesAsync();
+    }
 
-        public bool DeleteProduct(int id)
-        {
-            return CRUD.DeleteProduct(id);
-        }
+    public async Task UpdateAsync(Product product)
+    {
+        await using var db = await _factory.CreateDbContextAsync();
+        db.Products.Update(product);
+        await db.SaveChangesAsync();
+    }
 
-        public bool UpdateProduct(ProductModel product)
-        {
-            return CRUD.UpdateProduct(product);
-        }
+    public async Task DeleteAsync(Guid id)
+    {
+        await using var db = await _factory.CreateDbContextAsync();
+        var product = await db.Products.FindAsync(id);
+        if (product is null) return;
+        db.Products.Remove(product);
+        await db.SaveChangesAsync();
     }
 }

@@ -1,6 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using UserInterface.Components;
 using BusinessLogicLayer;
-
+using DataAccessLayer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,8 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+var connectionString =
+    builder.Configuration.GetConnectionString("Supabase")
+    ?? throw new InvalidOperationException("Connection string 'Supabase' was not found.");
+
+builder.Services.AddDbContextFactory<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ProductService>();
 
 var app = builder.Build();
 

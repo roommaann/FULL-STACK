@@ -1,15 +1,11 @@
 using Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace BusinessLogicLayer
+namespace BusinessLogicLayer;
+
+public interface IProductService
 {
-    public interface IProductService
-    {
-        List<ProductModel> GetAllData();
-        bool AddProduct(ProductModel product);
-        bool DeleteProduct(int id);
-        bool UpdateProduct(ProductModel product);
-    }
+    Task<List<Product>> GetAllAsync();
+    Task AddAsync(Product product);
+    Task UpdateAsync(Product product);
+    Task DeleteAsync(Guid id);
 }
