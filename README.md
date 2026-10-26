@@ -1,5 +1,4 @@
-# Lab 06: Entity Framework Core + Blazor + Supabase
-**Course:** BSIT VII  
+# Lab 06: Entity Framework Core + Blazor + Supabase 
 **Topic:** Build a working Product Management application with PostgreSQL using EF Core & Blazor  
 
 ---
